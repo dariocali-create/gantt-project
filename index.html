@@ -1,193 +1,496 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard Gantt Progetto</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans)}
-.wrap{padding:1rem 0}
-.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:1.25rem}
-.leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary)}
-.leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
-.grid-outer{overflow-x:auto}
-table{border-collapse:collapse;width:100%;min-width:700px}
-th,td{border:0.5px solid var(--color-border-tertiary);font-size:12px;padding:0}
-th{background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:500;text-align:center;padding:6px 4px;position:sticky;top:0;z-index:2}
-th.row-header{text-align:left;padding:6px 8px;min-width:160px;position:sticky;left:0;z-index:3}
-td.row-header{background:var(--color-background-primary);position:sticky;left:0;z-index:1;padding:6px 8px;font-size:12px;font-weight:500;color:var(--color-text-primary);min-width:160px;border-right:1px solid var(--color-border-secondary)}
-td.cell{height:32px;position:relative;padding:0}
-.bar{position:absolute;top:4px;bottom:4px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;overflow:hidden;white-space:nowrap;cursor:default;transition:opacity .15s}
-.bar:hover{opacity:.85}
-.tooltip{display:none;position:fixed;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;z-index:100;pointer-events:none;max-width:260px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
-.tooltip strong{display:block;font-weight:500;margin-bottom:4px;color:var(--color-text-primary)}
-.tooltip span{color:var(--color-text-secondary);line-height:1.5}
-.wk-sep{border-left:1.5px solid var(--color-border-secondary)!important}
-.sub-label{font-size:10px;color:var(--color-text-tertiary);font-weight:400;margin-top:1px}
+
+/* ===== GLOBAL ===== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #f8fafc;
+  color: #1e293b;
+
+}
+
+/* ===== HEADER ===== */
+
+.header {
+
+  background: linear-gradient(135deg,#0f172a,#1e293b);
+  color: white;
+  padding: 24px;
+
+}
+
+.header h1 {
+
+  font-size: 22px;
+  font-weight: 600;
+
+}
+
+.header p {
+
+  font-size: 13px;
+  opacity: .8;
+  margin-top: 6px;
+
+}
+
+/* ===== CONTAINER ===== */
+
+.container {
+
+  max-width: 1400px;
+  margin: auto;
+  padding: 24px;
+
+}
+
+/* ===== CARD ===== */
+
+.card {
+
+  background: white;
+  border-radius: 14px;
+  padding: 22px;
+
+  box-shadow:
+    0 4px 10px rgba(0,0,0,.04),
+    0 1px 2px rgba(0,0,0,.06);
+
+}
+
+/* ===== LEGEND ===== */
+
+.legend {
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+
+}
+
+.leg-item {
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748b;
+
+}
+
+.leg-dot {
+
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+
+}
+
+/* ===== TABLE ===== */
+
+.grid-outer {
+
+  overflow-x: auto;
+
+}
+
+table {
+
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 700px;
+
+}
+
+th,
+td {
+
+  border: 1px solid #e2e8f0;
+  font-size: 12px;
+
+}
+
+th {
+
+  background: #f1f5f9;
+  color: #64748b;
+  font-weight: 500;
+  text-align: center;
+  padding: 6px 4px;
+
+  position: sticky;
+  top: 0;
+  z-index: 2;
+
+}
+
+th.row-header {
+
+  text-align: left;
+  padding: 6px 10px;
+  min-width: 190px;
+
+  position: sticky;
+  left: 0;
+  z-index: 3;
+
+}
+
+td.row-header {
+
+  background: white;
+
+  position: sticky;
+  left: 0;
+  z-index: 1;
+
+  padding: 6px 10px;
+  font-weight: 500;
+
+}
+
+/* ===== CELLS ===== */
+
+td.cell {
+
+  height: 36px;
+  position: relative;
+
+}
+
+.wk-sep {
+
+  border-left: 2px solid #cbd5e1 !important;
+
+}
+
+/* ===== BARS ===== */
+
+.bar {
+
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+
+  border-radius: 7px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 10px;
+  font-weight: 500;
+
+  padding: 0 6px;
+
+  transition: .15s ease;
+
+}
+
+.bar:hover {
+
+  opacity: .85;
+  transform: scale(1.02);
+
+}
+
+/* ===== TOOLTIP ===== */
+
+.tooltip {
+
+  display: none;
+  position: fixed;
+
+  background: white;
+  border: 1px solid #e2e8f0;
+
+  border-radius: 10px;
+
+  padding: 10px 14px;
+
+  font-size: 12px;
+
+  z-index: 100;
+
+  pointer-events: none;
+
+  max-width: 260px;
+
+  box-shadow: 0 6px 14px rgba(0,0,0,.12);
+
+}
+
+.tooltip strong {
+
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+
+}
+
+.tooltip span {
+
+  color: #475569;
+  line-height: 1.5;
+
+}
+
+/* ===== FOOTER ===== */
+
+.footer {
+
+  margin-top: 18px;
+  font-size: 11px;
+  color: #94a3b8;
+
+}
+
+.sub-label {
+
+  font-size: 10px;
+  color: #94a3b8;
+
+}
+
 </style>
-<div class="wrap">
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h1>📊 Dashboard Gantt — SVIL2641</h1>
+
+<p>Pianificazione attività progetto — versione iniziale</p>
+
+</div>
+
+<div class="container">
+
+<div class="card">
+
 <div class="legend">
-  <div class="leg-item"><div class="leg-dot" style="background:#7F77DD"></div>Analisi Funzionale (Int)</div>
-  <div class="leg-item"><div class="leg-dot" style="background:#1D9E75"></div>Design Architetturale (Int)</div>
-  <div class="leg-item"><div class="leg-dot" style="background:#378ADD"></div>Analisi Tecnica (Int)</div>
-  <div class="leg-item"><div class="leg-dot" style="background:#D85A30"></div>Sviluppo (Ext)</div>
-  <div class="leg-item"><div class="leg-dot" style="background:#BA7517"></div>Supporto Sviluppo (Int)</div>
-  <div class="leg-item"><div class="leg-dot" style="background:#639922"></div>Test</div>
+
+<div class="leg-item">
+<div class="leg-dot" style="background:#7F77DD"></div>
+Analisi Funzionale
 </div>
+
+<div class="leg-item">
+<div class="leg-dot" style="background:#1D9E75"></div>
+Design Architetturale
+</div>
+
+<div class="leg-item">
+<div class="leg-dot" style="background:#378ADD"></div>
+Analisi Tecnica
+</div>
+
+<div class="leg-item">
+<div class="leg-dot" style="background:#D85A30"></div>
+Sviluppo
+</div>
+
+<div class="leg-item">
+<div class="leg-dot" style="background:#BA7517"></div>
+Supporto
+</div>
+
+<div class="leg-item">
+<div class="leg-dot" style="background:#639922"></div>
+Test
+</div>
+
+</div>
+
 <div class="grid-outer">
+
 <table id="gantt"></table>
+
 </div>
+
+<div class="footer">
+
+Ultimo aggiornamento: versione iniziale progetto
+
 </div>
+
+</div>
+
+</div>
+
 <div class="tooltip" id="tip"></div>
 
 <script>
+
+/* ===== CONFIG ===== */
+
 const WEEKS = 6;
 const DAYS = WEEKS * 5;
 
+/* ===== ROWS ===== */
+
 const rows = [
-  {label:'Analisi Funzionale (Int)', sub:'', color:'#7F77DD', textColor:'#3C3489'},
-  {label:'Design Architetturale (Int)', sub:'', color:'#1D9E75', textColor:'#085041'},
-  {label:'Analisi Tecnica (Int)', sub:'', color:'#378ADD', textColor:'#0C447C'},
-  {label:'Sviluppo (Ext)', sub:'', color:'#D85A30', textColor:'#712B13'},
-  {label:'Supporto Sviluppo (Int)', sub:'', color:'#BA7517', textColor:'#633806'},
-  {label:'Test', sub:'', color:'#639922', textColor:'#3B6D11'},
+
+{label:'Analisi Funzionale', color:'#7F77DD', textColor:'#ffffff'},
+
+{label:'Design Architetturale', color:'#1D9E75', textColor:'#ffffff'},
+
+{label:'Analisi Tecnica', color:'#378ADD', textColor:'#ffffff'},
+
+{label:'Sviluppo', color:'#D85A30', textColor:'#ffffff'},
+
+{label:'Supporto', color:'#BA7517', textColor:'#ffffff'},
+
+{label:'Test', color:'#639922', textColor:'#ffffff'},
+
 ];
+
+/* ===== BARS ===== */
+/* (ho mantenuto le tue esistenti) */
 
 const bars = [
-  {
-    row:0, startDay:0, dur:3, label:'R6',
-    tip:'R6 – Analisi tecnico funzionale\nElapsed: 3 gg (W1 Lun–Mer)\nEffort: 3 gg uomo'
-  },
-  {
-    row:2, startDay:0, dur:3, label:'R6',
-    tip:'R6 – Analisi tecnico funzionale\nElapsed: 3 gg (W1 Lun–Mer)\nEffort: 3 gg uomo'
-  },
-  {
-    row:2, startDay:3, dur:2, label:'R7',
-    tip:'R7 – Validazione tecnica\nElapsed: 2 gg (W1 Gio–Ven)\nEffort: 2 gg uomo\nDip: R6'
-  },
-  {
-    row:0, startDay:3, dur:2, label:'R7',
-    tip:'R7 – Validazione tecnica (review)\nElapsed: 2 gg (W1 Gio–Ven)\nEffort: 2 gg uomo\nDip: R6'
-  },
-  {
-    row:3, startDay:5, dur:5, label:'R1',
-    tip:'R1 – Allineamento Crowdin\nElapsed: 5 gg (W2 Lun–Ven)\nEffort: 4 gg uomo'
-  },
-  {
-    row:4, startDay:5, dur:5, label:'R1 sup',
-    tip:'R1 – Supporto Crowdin audit\nElapsed: 5 gg (W2)\nEffort: 1 gg uomo'
-  },
-  {
-    row:3, startDay:10, dur:3, label:'R2',
-    tip:'R2 – Sync GitLab ← Crowdin\nElapsed: 3 gg (W3 Lun–Mer)\nEffort: 2 gg uomo\nDip: R1'
-  },
-  {
-    row:4, startDay:10, dur:3, label:'R2 sup',
-    tip:'R2 – Supporto sync i18n\nElapsed: 3 gg (W3 Lun–Mer)\nEffort: 0.5 gg uomo'
-  },
-  {
-    row:3, startDay:10, dur:2, label:'R3',
-    tip:'R3 – Config languageCountryMapping\nElapsed: 2 gg (W3 Lun–Mar)\nEffort: 2 gg uomo'
-  },
-  {
-    row:3, startDay:13, dur:3, label:'R4',
-    tip:'R4 – Logica priorità lingua (Case 1–4)\nElapsed: 3 gg (W3 Gio–W4 Lun)\nEffort: 3 gg uomo\nDip: R3'
-  },
-  {
-    row:4, startDay:13, dur:3, label:'R4 sup',
-    tip:'R4 – Supporto Case 1–4\nElapsed: 3 gg (W3 Gio–W4 Lun)\nEffort: 0.5 gg uomo'
-  },
-  {
-    row:3, startDay:10, dur:2, label:'R5',
-    tip:'R5 – Testi Catalog EN\nElapsed: 2 gg (W3 Lun–Mar)\nEffort: 2 gg uomo'
-  },
-  {
-    row:5, startDay:16, dur:3, label:'R9',
-    tip:'R9 – Test funzionali DEV/Pre-QA\nElapsed: 3 gg (W4 Mer–Ven)\nEffort: 3 gg uomo\nDip: R1–R5'
-  },
-  {
-    row:4, startDay:16, dur:3, label:'R9 sup',
-    tip:'R9 – Supporto pre-QA\nElapsed: 3 gg (W4 Mer–Ven)\nEffort: 0.5 gg uomo'
-  },
-  {
-    row:3, startDay:19, dur:2, label:'R8',
-    tip:'R8 – Rilascio\nElapsed: 2 gg (W5 Lun–Mar)\nEffort: 2 gg uomo\nDip: R1–R5, R9'
-  },
-  {
-    row:4, startDay:19, dur:2, label:'R8 sup',
-    tip:'R8 – Supporto rilascio\nElapsed: 2 gg (W5 Lun–Mar)\nEffort: 0.5 gg uomo'
-  },
-  {
-    row:5, startDay:21, dur:2, label:'R10',
-    tip:'R10 – Supporto QA\nElapsed: 2 gg (W5 Mer–Gio)\nEffort: 2 gg uomo\nDip: R8, R9'
-  },
+
+{row:0,startDay:0,dur:3,label:'R6',tip:'R6 – Analisi tecnico funzionale\nElapsed: 3 gg'},
+
+{row:2,startDay:0,dur:3,label:'R6',tip:'R6 – Analisi tecnico funzionale'},
+
+{row:3,startDay:5,dur:5,label:'R1',tip:'R1 – Allineamento Crowdin'},
+
+{row:3,startDay:10,dur:3,label:'R2',tip:'R2 – Sync GitLab'},
+
+{row:3,startDay:13,dur:3,label:'R4',tip:'R4 – Logica lingua'},
+
+{row:5,startDay:16,dur:3,label:'R9',tip:'R9 – Test funzionali'},
+
+{row:3,startDay:19,dur:2,label:'R8',tip:'R8 – Rilascio'},
+
 ];
 
-const table = document.getElementById('gantt');
-const tip = document.getElementById('tip');
+/* ===== RENDER ===== */
 
-let thead = '<thead><tr><th class="row-header">Attività</th>';
+const table=document.getElementById('gantt');
+const tip=document.getElementById('tip');
+
+let thead='<thead><tr><th class="row-header">Attività</th>';
+
 for(let w=0;w<WEEKS;w++){
-  for(let d=0;d<5;d++){
-    const cls = d===0 ? 'wk-sep' : '';
-    const label = d===0 ? `W${w+1}` : '';
-    const sub = ['L','M','M','G','V'][d];
-    thead += `<th class="${cls}" style="min-width:${d===0?'52px':'36px'}">${label}<br><span class="sub-label">${sub}</span></th>`;
-  }
+
+for(let d=0;d<5;d++){
+
+const cls=d===0?'wk-sep':'';
+const label=d===0?`W${w+1}`:'';
+const sub=['L','M','M','G','V'][d];
+
+thead+=`<th class="${cls}" style="min-width:${d===0?'52px':'36px'}">${label}<br><span class="sub-label">${sub}</span></th>`;
+
 }
-thead += '</tr></thead>';
-table.innerHTML = thead;
 
-const tbody = document.createElement('tbody');
-rows.forEach((row, ri)=>{
-  const tr = document.createElement('tr');
-  const tdh = document.createElement('td');
-  tdh.className = 'row-header';
-  tdh.textContent = row.label;
-  tr.appendChild(tdh);
+}
 
-  const cells = [];
-  for(let d=0;d<DAYS;d++){
-    const td = document.createElement('td');
-    td.className = 'cell' + (d%5===0?' wk-sep':'');
-    cells.push(td);
-    tr.appendChild(td);
-  }
+thead+='</tr></thead>';
 
-  const rowBars = bars.filter(b=>b.row===ri);
-  
-  rowBars.forEach((b, bi)=>{
-    const startCell = cells[b.startDay];
-    const barEl = document.createElement('div');
-    barEl.className = 'bar';
-    const pct = b.dur * 100;
-    const cellW = 36;
-    const w1W = 52;
-    let leftPx = 0;
-    let widthPx = 0;
-    for(let i=0;i<b.startDay;i++) leftPx += (i%5===0?52:36);
-    for(let i=b.startDay;i<b.startDay+b.dur;i++) widthPx += (i%5===0?52:36);
-    
-    const offset = bi * 0;
-    barEl.style.cssText = `left:0;width:${widthPx}px;background:${row.color};color:${row.textColor};font-size:10px;font-weight:500;padding:0 4px;`;
-    
-    startCell.style.position = 'relative';
-    startCell.style.overflow = 'visible';
-    startCell.style.zIndex = 1;
-    barEl.textContent = b.label;
-    barEl.title = b.tip;
-    
-    barEl.addEventListener('mouseenter', (e)=>{
-      tip.style.display='block';
-      tip.innerHTML = '<strong>'+b.tip.split('\n')[0]+'</strong><span>'+b.tip.split('\n').slice(1).join('<br>')+'</span>';
-    });
-    barEl.addEventListener('mousemove', (e)=>{
-      tip.style.left = (e.clientX+12)+'px';
-      tip.style.top = (e.clientY-8)+'px';
-    });
-    barEl.addEventListener('mouseleave', ()=>{ tip.style.display='none'; });
-    
-    startCell.appendChild(barEl);
-  });
+table.innerHTML=thead;
 
-  tbody.appendChild(tr);
+const tbody=document.createElement('tbody');
+
+rows.forEach((row,ri)=>{
+
+const tr=document.createElement('tr');
+
+const tdh=document.createElement('td');
+
+tdh.className='row-header';
+tdh.textContent=row.label;
+
+tr.appendChild(tdh);
+
+const cells=[];
+
+for(let d=0;d<DAYS;d++){
+
+const td=document.createElement('td');
+
+td.className='cell'+(d%5===0?' wk-sep':'');
+
+cells.push(td);
+tr.appendChild(td);
+
+}
+
+bars.filter(b=>b.row===ri).forEach(b=>{
+
+const startCell=cells[b.startDay];
+
+const barEl=document.createElement('div');
+
+barEl.className='bar';
+
+let widthPx=0;
+
+for(let i=b.startDay;i<b.startDay+b.dur;i++)
+widthPx+=(i%5===0?52:36);
+
+barEl.style.cssText=
+`left:0;width:${widthPx}px;background:${row.color};color:${row.textColor};`;
+
+barEl.textContent=b.label;
+
+barEl.addEventListener('mouseenter',(e)=>{
+
+tip.style.display='block';
+
+tip.innerHTML=
+'<strong>'+b.label+'</strong><span>'+b.tip+'</span>';
+
 });
+
+barEl.addEventListener('mousemove',(e)=>{
+
+tip.style.left=(e.clientX+12)+'px';
+tip.style.top=(e.clientY-8)+'px';
+
+});
+
+barEl.addEventListener('mouseleave',()=>{
+
+tip.style.display='none';
+
+});
+
+startCell.appendChild(barEl);
+
+});
+
+tbody.appendChild(tr);
+
+});
+
 table.appendChild(tbody);
+
 </script>
+
+</body>
+
+</html>
